@@ -20,8 +20,6 @@ package com.xenoage.bp2k6.audio.javasound;
 
 import com.xenoage.bp2k6.audio.*;
 
-import javax.sound.sampled.FloatControl;
-
 
 /**
  * Implementation of a sound effect
@@ -59,27 +57,18 @@ public class JavaSoundEffect
   public void play()
   {
     //check if buffer is valid
-    if (soundBuffer.getClip().getMicrosecondLength() == 0)
+    short[] samples = soundBuffer.getSamples();
+    if (samples == null || samples.length == 0)
       return;
-    
-    //we can play as much sounds simultaneously as we want
-    //TODO: but every effect has its own position?!
-    soundBuffer.getClip().setFramePosition(0);
-    if (this.loop)
-      soundBuffer.getClip().setLoopPoints(0, -1);
-    else
-      soundBuffer.getClip().setLoopPoints(0, 0);
     
     //apply volume
     if (volume < 0.0002f)
       volume = 0.0002f;
     else if (volume > 1)
       volume = 1;
-    FloatControl gainControl = (FloatControl)
-      soundBuffer.getClip().getControl(FloatControl.Type.MASTER_GAIN);
-    gainControl.setValue(20 * (float) Math.log10(volume));
     
-    soundBuffer.getClip().start();
+    //all sound effects are mixed into a single audio line
+    JavaSoundEngine.getMixer().play(this, samples, volume);
   }
   
   
@@ -88,7 +77,7 @@ public class JavaSoundEffect
    */
   public void stop()
   {
-    soundBuffer.getClip().stop();
+    JavaSoundEngine.getMixer().stop(this);
   }
   
 

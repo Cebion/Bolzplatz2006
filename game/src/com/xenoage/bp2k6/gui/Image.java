@@ -178,7 +178,7 @@ public class Image
       {
         //no rotation
         driver.draw2DImage(image, rectSrc, rectDest,
-          null, colorArray, true);
+          null, colorArray[0], true);
       }
       else if (pivot == null)
       {

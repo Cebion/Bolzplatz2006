@@ -25,6 +25,7 @@ import com.xenoage.bp2k6.util.language.Language;
 import net.sf.jirr.ITexture;
 import net.sf.jirr.IVideoDriver;
 import net.sf.jirr.SColor;
+import net.sf.jirr.recti;
 
 import java.util.List;
 import java.util.Hashtable;
@@ -56,6 +57,8 @@ public class GameFont
 
   //hight of the font
   private int height = 0;
+  //scale from the letter layout to the actual texture size
+  private float textureScale = 1;
   
   //native color variable
   private SColor nativeColor = new SColor();
@@ -113,12 +116,31 @@ public class GameFont
       GameEngine.fatalError(this,
         new Exception("Game font texture \"" + fileName + "\" could not be loaded!"));
     }
+    else
+    {
+      //letter positions may be given for a larger texture than the shipped one
+      int layoutSize = 1;
+      for (Rect2i r : letters.values())
+        while (layoutSize < Math.max(r.x2, r.y2 + 1))
+          layoutSize *= 2;
+      textureScale = (float) textureFont.getOriginalSize().getWidth() / layoutSize;
+    }
     /* //temp: use colorkey for 1024 textures (does not accept alpha channel?!?)
     if (textureFont.getOriginalSize().getWidth() == 1024)
       GameEngine.getVideoDriver().makeColorKeyTexture(textureFont,
         new position2di(0, 0)); */
     Logging.log(Logging.LEVEL_MESSAGES, this,
       "Game font \"" + id + "\" loaded.");
+  }
+
+
+  /**
+   * Converts a letter rectangle from layout to texture coordinates.
+   */
+  private recti toTextureRect(Rect2i r)
+  {
+    return new recti(Math.round(r.x1 * textureScale), Math.round(r.y1 * textureScale),
+      Math.round(r.x2 * textureScale), Math.round(r.y2 * textureScale));
   }
 
 
@@ -154,8 +176,8 @@ public class GameFont
       {
         rDest.set(posX, rect.y1, posX + (int) (rSrc.getWidth() * scale), rect.y2);
         videoDriver.draw2DImage(textureFont,
-          Cast.Rect2iToIrrlichtRecti(rDest), Cast.Rect2iToIrrlichtRecti(rSrc),
-          null, nativeColorArray, true);
+          Cast.Rect2iToIrrlichtRecti(rDest), toTextureRect(rSrc),
+          null, nativeColorArray[0], true);
         posX += (int) (rSrc.getWidth() * scale);
       }
     }
@@ -207,8 +229,8 @@ public class GameFont
         {
           rDest.set(posX, posY, posX + w[i], posY + rect.y2 - rect.y1);
           videoDriver.draw2DImage(textureFont,
-            Cast.Rect2iToIrrlichtRecti(rDest), Cast.Rect2iToIrrlichtRecti(rSrc),
-            null, nativeColorArray, true);
+            Cast.Rect2iToIrrlichtRecti(rDest), toTextureRect(rSrc),
+            null, nativeColorArray[0], true);
           posX += w[i];
           //if this was a space char ' ', find the next one to
           //get the whole word and find out

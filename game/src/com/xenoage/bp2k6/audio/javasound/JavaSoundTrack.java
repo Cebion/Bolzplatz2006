@@ -45,7 +45,7 @@ public class JavaSoundTrack
 {
 
   //the audio stream
-  private int BUFFER_SIZE = 2048 * 200; //200 kB
+  private int BUFFER_SIZE = 16384; //decode in small chunks, so the line never runs dry
   private AudioInputStream ais;
   private byte[] buffer = new byte[BUFFER_SIZE];
   private SourceDataLine line;
@@ -304,6 +304,7 @@ public class JavaSoundTrack
     {
       while (!finalized)
       {
+        boolean streaming = false;
         if (line != null && ais != null)
         {
           try
@@ -315,6 +316,7 @@ public class JavaSoundTrack
             if (readBytes >= 0)
             {
               line.write(buffer, 0, readBytes);
+              streaming = true;
               //TEST
               //System.out.println(GameEngine.getIrrlichtTime() +
               //  ": Line " + playlistCurrentID + " refilled");
@@ -328,7 +330,10 @@ public class JavaSoundTrack
                 openInputStream();
                 readBytes = ais.read(buffer, 0, buffer.length);
                 if (readBytes >= 0)
+                {
                   line.write(buffer, 0, readBytes);
+                  streaming = true;
+                }
               }
             }
           }
@@ -342,7 +347,9 @@ public class JavaSoundTrack
         }
         try
         {
-          sleep(50); //update all 50 ms
+          //the blocking line.write paces the loop while streaming
+          if (!streaming)
+            sleep(50); //update all 50 ms
         }
         catch (InterruptedException ex)
         {
@@ -475,7 +482,9 @@ public class JavaSoundTrack
         ais.getFormat(), 1024 * 500); //500 kb should be enough for the buffer
         //((int) ais.getFrameLength() * decodedFormat.getFrameSize()));
       line = (SourceDataLine)AudioSystem.getLine(info);
-      line.open(decodedFormat); //TODO: or baseFormat?
+      //ask for 0.5 s of buffer (ALSA dmix may still cap it much lower)
+      line.open(decodedFormat,
+        (int) (decodedFormat.getFrameRate() * decodedFormat.getFrameSize() / 2));
       line.addLineListener(this);
       return true;
     }
@@ -499,7 +508,7 @@ public class JavaSoundTrack
   private AudioFormat openInputStream()
     throws IOException, UnsupportedAudioFileException
   {
-    File file = new File("data/" + playlistCurrentID);
+    File file = JavaSoundEngine.getSoundFile("data/" + playlistCurrentID);
     AudioInputStream baseAIS = AudioSystem.getAudioInputStream(file);
     AudioFormat baseFormat = baseAIS.getFormat();
     AudioFormat decodedFormat = new AudioFormat(

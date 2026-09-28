@@ -124,33 +124,8 @@ public class Input
   {
     Logging.log(Logging.LEVEL_MESSAGES, this,
       "Searching for joysticks/gamepads...");
-    try
-    {
-      SDLMain.quitSubSystem(SDLMain.SDL_INIT_JOYSTICK);
-      SDLMain.init(SDLMain.SDL_INIT_JOYSTICK);
-      //SDLEvent.joystickEventState(SDLEventState.ENABLE);
-  
-      numJoysticks = SDLJoystick.numJoysticks();
-      if (numJoysticks == 0)
-      {
-        Logging.log(Logging.LEVEL_MESSAGES, this, "No joysticks detected.");
-      }
-      else
-      {
-        Logging.log(Logging.LEVEL_MESSAGES, this,
-                    numJoysticks + " joystick(s) detected.");
-        numJoysticks = java.lang.Math.min(numJoysticks, Player);
-        for (int k = 0; k <= numJoysticks - 1; k++)
-        {
-          Joystick[k] = SDLJoystick.joystickOpen(k);
-        }
-      }
-    }
-    catch (Exception Ex)
-    {
-      Logging.log(Logging.LEVEL_ERRORS, this, "Error while opening joystick!");
-      numJoysticks = 0;
-    }
+    //gamepads are mapped to keys by gptokeyb2, sdljava is not used
+    numJoysticks = 0;
   }
   
 
@@ -210,6 +185,7 @@ public class Input
       //Joystick auswerten
       try
       {
+        if (numJoysticks > 0)
         SDLJoystick.joystickUpdate(); //updates all joysticks
          
         for (int k = 0; k <= numJoysticks - 1; k++)
@@ -262,6 +238,7 @@ public class Input
         
         //read the active joystick
         
+        if (numJoysticks == 0) throw new Exception();
         int k = activeJoystickIndex;
         SDLJoystick.joystickUpdate(); //Joystick[k].joystickUpdate();
 

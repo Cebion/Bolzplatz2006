@@ -225,16 +225,16 @@ public class OptionButton
       //draw left part of the button
       Rect2i rectButtonLeft = new Rect2i(r.x1, r.y1, r.x1 + buttonOuterPartWidth, r.y2);
       driver.draw2DImage(image, Cast.Rect2iToIrrlichtRecti(rectButtonLeft),
-        imagePositions[0], null, UIManager.COLOR_WHITE_ARRAY4, true);
+        imagePositions[0], null, UIManager.COLOR_WHITE_ARRAY4[0], true);
       //draw center part of the button
       Rect2i rectButtonCenter = new Rect2i(r.x1 + buttonOuterPartWidth, r.y1,
         r.x2 - buttonOuterPartWidth, r.y2);
       driver.draw2DImage(image, Cast.Rect2iToIrrlichtRecti(rectButtonCenter),
-        imagePositions[1], null, UIManager.COLOR_WHITE_ARRAY4, true);
+        imagePositions[1], null, UIManager.COLOR_WHITE_ARRAY4[0], true);
       //draw right part of the button
       Rect2i rectButtonRight = new Rect2i(r.x2 - buttonOuterPartWidth, r.y1, r.x2, r.y2);
       driver.draw2DImage(image, Cast.Rect2iToIrrlichtRecti(rectButtonRight),
-        imagePositions[2], null, UIManager.COLOR_WHITE_ARRAY4, true);
+        imagePositions[2], null, UIManager.COLOR_WHITE_ARRAY4[0], true);
 
       //make font 16 px smaller than button
       rectButtonCenter.y1 += 8 * scaleY; 

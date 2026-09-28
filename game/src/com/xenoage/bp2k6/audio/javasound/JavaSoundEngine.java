@@ -21,6 +21,7 @@ package com.xenoage.bp2k6.audio.javasound;
 import com.xenoage.bp2k6.audio.*;
 import com.xenoage.bp2k6.util.Logging;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -49,6 +50,9 @@ public class JavaSoundEngine
   //list of the loaded OpenAL buffers
   ArrayList<JavaSoundBuffer> buffers = new ArrayList<JavaSoundBuffer>();
 
+  //mixer for all sound effects
+  private static JavaSoundMixer mixer;
+
 
   /**
    * Create the sound engine.
@@ -58,6 +62,8 @@ public class JavaSoundEngine
   {
 
     Logging.log(Logging.LEVEL_MESSAGES, this, "Creating SoundEngine...");
+    if (mixer == null)
+      mixer = new JavaSoundMixer();
     Logging.log(Logging.LEVEL_MESSAGES, this, "SoundEngine successfully created.");
   }
 
@@ -115,6 +121,31 @@ public class JavaSoundEngine
    * @param path     The path of the file, for example "data/sound/soundfx/1.wav"
    * @return         A <code>SoundBuffer</code> instance containing the sound
    */
+  /**
+   * Gets the mixer for all sound effects.
+   */
+  static JavaSoundMixer getMixer()
+  {
+    return mixer;
+  }
+
+
+  /**
+   * Returns the file for the given sound path. A .wav file with the same name
+   * is preferred, because the Vorbis decoder returns no data for very short files.
+   */
+  static File getSoundFile(String path)
+  {
+    if (path.endsWith(".ogg"))
+    {
+      File wav = new File(path.substring(0, path.length() - 4) + ".wav");
+      if (wav.exists())
+        return wav;
+    }
+    return new File(path);
+  }
+
+
   public JavaSoundBuffer createSoundBuffer(String path)
   {
     Logging.log(Logging.LEVEL_MESSAGES, this,
@@ -126,7 +157,7 @@ public class JavaSoundEngine
     {
       try
       {
-        File file = new File(path);
+        File file = getSoundFile(path);
         //get AudioInputStream from given file.  
         AudioInputStream baseAIS = AudioSystem.getAudioInputStream(file);
         AudioFormat baseFormat = baseAIS.getFormat();
@@ -140,18 +171,21 @@ public class JavaSoundEngine
           false);
         AudioInputStream ais = AudioSystem.getAudioInputStream(
           decodedFormat, baseAIS);
-        DataLine.Info info = new DataLine.Info(Clip.class,
-          ais.getFormat(), ((int) ais.getFrameLength() *
-            decodedFormat.getFrameSize()));
-        Clip clip = (Clip) AudioSystem.getLine(info);
-        clip.open(ais);
-        //clip.start(); //TEST
-        if (clip.getMicrosecondLength() == 0)
+        //decode the whole sound and convert it to the mixer format
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        byte[] readBuffer = new byte[16384];
+        int readBytes;
+        while ((readBytes = ais.read(readBuffer)) >= 0)
+          data.write(readBuffer, 0, readBytes);
+        ais.close();
+        short[] samples = JavaSoundMixer.convert(data.toByteArray(), data.size(),
+          decodedFormat.getSampleRate(), decodedFormat.getChannels());
+        if (samples.length == 0)
           Logging.log(Logging.LEVEL_WARNINGS, this,
             "Java Sound reports length 0: \"" + path + "\", file length is " +
             file.length() + " bytes");
         //create a new SoundBuffer
-        ret = new JavaSoundBuffer(path, clip);
+        ret = new JavaSoundBuffer(path, samples);
         buffers.add(ret);
         Logging.log(Logging.LEVEL_MESSAGES, this,
           "SoundBuffer successfully created.");

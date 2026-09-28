@@ -399,7 +399,7 @@ public class Screen
     if (this.backgroundImage != null)
     {
       driver.draw2DImage(backgroundImage, rectScreen,
-        backgroundImageRect, null, UIManager.COLOR_WHITE_ARRAY4, false);
+        backgroundImageRect, null, UIManager.COLOR_WHITE_ARRAY4[0], false);
     }
     //draw all groups
     for (int i = 0; i < groups.size(); i++)

@@ -121,7 +121,7 @@ public class MathTools
     //mRet.setM(15, 1);
     m[15] = 1;
 
-    mRet.setMatrixData(m);
+    mRet.setM(m);
 
   }
 

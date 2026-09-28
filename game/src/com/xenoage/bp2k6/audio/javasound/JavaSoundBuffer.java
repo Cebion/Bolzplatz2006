@@ -20,12 +20,12 @@ package com.xenoage.bp2k6.audio.javasound;
 
 import com.xenoage.bp2k6.audio.*;
 
-import javax.sound.sampled.Clip;
-
 
 /**
  * Implementation of a sound buffer
  * based on Java Sound with Vorbis SPI.
+ * The sound is stored decoded, in the format of the
+ * {@link JavaSoundMixer}.
  *
  * @author   Andreas Wenger
  */
@@ -34,17 +34,17 @@ public class JavaSoundBuffer
 {
 
   private String id;
-  private Clip clip;
+  private short[] samples;
 
   
   /**
    * @param id    ID of the file (relative path)
-   * @param clip  the sound clip  
+   * @param samples  the decoded stereo samples
    */
-  public JavaSoundBuffer(String id, Clip clip)
+  public JavaSoundBuffer(String id, short[] samples)
   {
     this.id = id;
-    this.clip = clip;
+    this.samples = samples;
   }
 
   
@@ -58,11 +58,11 @@ public class JavaSoundBuffer
   
   
   /**
-   * Gets the clip assigned to this SoundBuffer.
+   * Gets the decoded stereo samples of this SoundBuffer.
    */
-  public Clip getClip()
+  public short[] getSamples()
   {
-    return clip;
+    return samples;
   }
   
   
@@ -71,7 +71,7 @@ public class JavaSoundBuffer
    */
   public void clear()
   {
-    clip = null;
+    samples = null;
   }
 
   

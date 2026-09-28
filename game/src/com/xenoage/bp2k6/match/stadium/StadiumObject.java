@@ -153,13 +153,13 @@ public abstract class StadiumObject
       {
         m.setAmbientColor(new SColor(255, 0, 0, 255));
         m.setEmissiveColor(new SColor(255, 100, 100, 255));
-        node.setDebugDataVisible(E_DEBUG_SCENE_TYPE.EDS_FULL);
+        node.setDebugDataVisible(true);
       }
       else
       {
         m.setAmbientColor(new SColor(255, 255, 255, 255));
         m.setEmissiveColor(new SColor(0, 0, 0, 0));
-        node.setDebugDataVisible(E_DEBUG_SCENE_TYPE.EDS_OFF);
+        node.setDebugDataVisible(false);
       }
     }
   }

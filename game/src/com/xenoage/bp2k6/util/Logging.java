@@ -48,7 +48,7 @@ public class Logging {
 
     public static void init()
     {
-        logFile = new File("log.txt");
+        logFile = new File(System.getProperty("bp2k6.logfile", "log.txt"));
         if (logFile.exists())
         {
             logFile.delete();

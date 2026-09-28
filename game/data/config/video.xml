@@ -3,5 +3,5 @@
   <width>800</width>
   <height>600</height>
   <depth>24</depth>
-  <fullscreen>true</fullscreen>
+  <fullscreen>false</fullscreen>
 </resolution>

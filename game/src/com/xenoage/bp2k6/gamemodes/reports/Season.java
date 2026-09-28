@@ -155,7 +155,7 @@ public class Season
       }
       Node eAllstarsLeague = XMLReader.getChildElement(eLeagues, "allstarsleague");
       if (eAllstarsLeague != null)
-        //TODO: allstarsLeague = new AllstarsLeague(eAllstarsLeague);
+        allstarsLeague = new AllstarsLeague(eAllstarsLeague);
       if (leagues[0] == null || leagues[1] == null ||
         leagues[2] == null || allstarsLeague == null)
         GameEngine.fatalError(this,

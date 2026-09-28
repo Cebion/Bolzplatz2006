@@ -112,7 +112,7 @@ public class EnergyBar
         rectDest.setRect(r.x1 + i * r.getWidth() / 10 , r.y1,
           r.x1 + (i + 1) * r.getWidth() / 10, r.y2);
         driver.draw2DImage(image, rectDest, rectSrc, null,
-          colorArray, true);
+          colorArray[0], true);
       }
 
         

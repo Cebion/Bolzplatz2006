@@ -176,7 +176,7 @@ public class Fade
               SColor[] colorArray = new SColor[]{
                 color, color, color, color};
               videoDriver.draw2DImage(rt, rectScreen, rectTexture,
-                null, colorArray);
+                null, colorArray[0]);
               break;
             //Linien wegziehen
             case 4:

@@ -22,9 +22,6 @@ import com.xenoage.bp2k6.Main;
 
 import java.io.*;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -76,71 +73,11 @@ public class Resolution
    */
   public Resolution()
   {
-    try
-    {
-      DisplayMode[] modes = Display.getAvailableDisplayModes();
-      int resomax = modes.length;
-      int[][] res = new int[resomax][3];
-  
-      //read video modes
-      for (int i = 0; i < modes.length; i++)
-      {
-        if (modes[i].getWidth() >= 640 && modes[i].getBitsPerPixel() >= 16)
-        {
-          //add it, if not already in list
-          boolean found = false;
-          for (int i2 = 0; i2 < resoanz; i2++)
-          {
-            if (res[i2][0] == modes[i].getWidth() &&
-              res[i2][1] == modes[i].getHeight() &&
-              res[i2][2] == modes[i].getBitsPerPixel())
-            {
-              found = true;
-              break;
-            }
-          }
-          if (!found)
-          {
-            res[resoanz][0] = modes[i].getWidth();
-            res[resoanz][1] = modes[i].getHeight();
-            res[resoanz][2] = modes[i].getBitsPerPixel();
-            resoanz++;
-          }
-        }
-      }
-      
-      //copy video modes
-      reso = new int[resoanz][3];
-      for (int i = 0; i < resoanz; i++)
-      {
-        reso[i][0] = res[i][0];
-        reso[i][1] = res[i][1];
-        reso[i][2] = res[i][2];
-      }
-      
-      //sort video modes
-      int temp;
-      for(int i = 0; i < resoanz - 1; i++)
-      {
-        for (int i2 = 0; i2 < resoanz - i - 1; i2++)
-        {
-          if(reso[i2][0] > reso[i2 + 1][0])
-          {
-            for(int iTemp = 0; iTemp < 3; iTemp++)
-            {
-              temp = reso[i2 + 1][iTemp];
-              reso[i2 + 1][iTemp] = reso[i2][iTemp];
-              reso[i2][iTemp] = temp; 
-            }
-          }
-        }
-      }
-      
-     }
-    catch (LWJGLException e)
-    {     
-      Main.fatalError(this, new Exception("Unable to determine display modes!"));
-    }
+    //only the native display mode, passed in by the launcher
+    resoanz = 1;
+    reso = new int[][] {{
+      Integer.getInteger("bp2k6.width", 640),
+      Integer.getInteger("bp2k6.height", 480), 32}};
   }
 
 
@@ -223,7 +160,7 @@ public class Resolution
   public int getDefaultVideoMode() {
     for(int i = 0; i < resoanz; i++) if ((reso[i][0]==1024)&&(reso[i][1]==768)&&(reso[i][2]==32)) return i;
     for(int i = 0; i < resoanz; i++) if ((reso[i][0]==1024)&&(reso[i][1]==768)&&(reso[i][2]==24)) return i;
-    return -1;
+    return resoanz > 0 ? 0 : -1;
   }
 
 

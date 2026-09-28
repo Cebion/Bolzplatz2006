@@ -6,9 +6,9 @@
       <key id="arrowup" value="38"/>
       <key id="arrowright" value="39"/>
       <key id="arrowdown" value="40"/>
-      <key id="pass" value="191"/>
-      <key id="shoot" value="222"/>
-      <key id="sprint" value="192"/>
+      <key id="pass" value="32"/>
+      <key id="shoot" value="88"/>
+      <key id="sprint" value="90"/>
     </keyboard>
     <gamepad>
       <key id="pass" value="1"/>

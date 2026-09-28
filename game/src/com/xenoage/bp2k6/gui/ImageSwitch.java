@@ -144,7 +144,7 @@ public class ImageSwitch
     {
       Rect2i rSrc = options.get(selectedIndex).getSrcPos();
       driver.draw2DImage(image, Cast.Rect2iToIrrlichtRecti(rDest),
-        Cast.Rect2iToIrrlichtRecti(rSrc), null, UIManager.COLOR_WHITE_ARRAY4, true);
+        Cast.Rect2iToIrrlichtRecti(rSrc), null, UIManager.COLOR_WHITE_ARRAY4[0], true);
     }
   }
 

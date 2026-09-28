@@ -24,15 +24,10 @@
       <action event="keypress" eventparam="confirm" type="activategroup" param1="mainmenu"/>
 			<action event="keypress" eventparam="cancel" type="exitprogram"/>
 
-			<image id="start.logo1" src="images/en/gamelogo.png" srcx="0" srcy="0" srcwidth="512" srcheight="256">
-        <pos x="172" y="256" width="512" height="256"/>
-				<flyin x="172" y="768" starttime="2" duration="0.3"/>
-				<flyout x="172" y="-256" starttime="0" duration="0.3"/>
-      </image>
-			<image id="start.logo2" src="images/en/gamelogo.png" srcx="0" srcy="256" srcwidth="169" srcheight="256">
-        <pos x="684" y="256" width="169" height="256"/>
-				<flyin x="684" y="768" starttime="2" duration="0.3"/>
-				<flyout x="684" y="-256" starttime="0" duration="0.3"/>
+			<image id="start.logo1" src="images/en/gamelogo.png" srcx="0" srcy="0" srcwidth="700" srcheight="256">
+        <pos x="162" y="256" width="700" height="256"/>
+				<flyin x="162" y="768" starttime="2" duration="0.3"/>
+				<flyout x="162" y="-256" starttime="0" duration="0.3"/>
       </image>
 
     </group>
